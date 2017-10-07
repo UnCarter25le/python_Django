@@ -1,0 +1,175 @@
+#########################################
+prepatation----------
+
+1)please get on to website: https://devcenter.heroku.com/articles/heroku-cli#debian-ubuntu   , and install heroku CLI.
+
+
+2)please get on to website: https://devcenter.heroku.com/articles/getting-started-with-python#introduction  ,and try every steps described 
+on the page.""Getting Started on Heroku with Python""
+
+3)please get on to website: https://devcenter.heroku.com/articles/heroku-postgresql#local-setup   , and try to install postgresql,which is a default database for heroku and it's free for charge.
+
+maybe u could debug by means of 
+				https://stackoverflow.com/questions/11919391/postgresql-error-fatal-role-username-does-not-exist
+				and https://chairco.com.tw/posts/2017/02/Pipenv%20tutorial.html.
+
+
+Go ahead------------------------------------------------------------
+""Deploying Python and Django Apps on Heroku"":https://devcenter.heroku.com/articles/deploying-python#declare-app-dependencies
+
+  3) In the top-level directory of your project, create a virtual environment for your project. (at any place)
+>>>virtualenv venv
+(the folder named venv would be created). Actually, folder name is up to you.
+
+  4)Next, activate the virtual environment. You must source the virtualenv environment for each terminal session where you run your app.
+>>>source venv/bin/activate
+While your virtual environment is active, all packages that you install using pip will be placed in your virtual environment.
+
+
+5) The requirements.txt file lists the app dependencies together with their versions. When an app is deployed, Heroku reads this file and installs the appropriate "Python dependencies".
+drag your "project"(for example "boardhero") u wanna run  into folder venv, and execute command bellow.
+
+#note: u are supposed to place folders , "static" and "template",which are originally in appname folder, in where appname folder exites.
+take it bellow for example---------
+ubuntu@ubuntu-VirtualBox:~/django_myproject/venv2/bb102finals$ ls
+bb102final                  ===elephant===>appname         manage.py         runtime.txt
+bb102final_is_upperproject  elephant_is_app  Procfile          ---"static"---
+db.sqlite3                  icanbase         requirements.txt  ---"templates"---
+
+#note again:
+project name shouldn't be the same as upper project name. 
+for example----
+ubuntu@ubuntu-VirtualBox:~/django_myproject/venv2/==bb102final==>project name$ ls
+===bb102final====>upper project                  elephant         manage.py         runtime.txt
+bb102final_is_upperproject  elephant_is_app  Procfile          static
+db.sqlite3                  icanbase         requirements.txt  templates
+
+ 
+>>> cd venv/boardhero/
+>>>pip freeze > requirements.txt
+
+6) put this command into bash.
+>>>pip install -r requirements.txt
+if it doesn't work, try to reopen a terminal to cd into workplace(project name's folder),
+and then repeat executing "pip freeze > requirements.txt". Finally, typing "pip install -r requirements.txt" will work smoothly.
+
+
+7) at project name'folder(for example "boardhero"). make sure the content of Procfile, that must be the same as description bellow
+web: gunicorn --pythonpath board board.wsgi     #note:board is upper project name!!!therefore, u should replace it with upper project name u use.
+
+8)at prject name'folder. make sure the content of runtime.txt,which should tell heroku what version of python u are using.
+
+python-3.6.1
+
+
+9) at upper project folder(for example "board"), create prod-settings.py. it's content is as bellow:
+from .settings import *
+STATIC_ROOT = 'staticfiles'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')
+ALLOWED_HOSTS = ['*']
+DEBUG = False
+
+10) at project name'folder(for example "boardhero"), create ".gitgnore." file, and it's content would be as bellow.  this file is invisible.
+*.pyc
+staticfiles
+.env
+
+or
+
+########################this is the textbook's way. this what i accept.
+*.pyc
+__pycache__
+staticfiles
+
+
+11) modify the file, wsgi.py, in upper project folder(for example "board"). several programs,noted by " ", should be add in file.
+
+import os
+from django.core.wsgi import get_wsgi_application
+"from dj_static import Cling"
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "board.settings")
+"application = Cling(get_wsgi_application())"
+
+
+
+
+12) runserver locally  (localhost:5000)
+>>>heroku local web
+
+#################begin to anible
+
+1) at the project name folder(for example "boardhero"), type programs as bellow in the bash.
+>>> heroku login
+
+after login successfully, u are going to build a repository to restore files on the web.
+
+>>>git init
+
+2)connect Git repository local with Heroku webserver's app that u had already created, for example "board5566".
+>>> heroku git:remote -a board5566
+
+3)set up the prod_settings.py of upper project,named board, for webserver's settings.
+
+>>>heroku config:set DJANGO_SETTINGS_MODULE=board.prod_settings    #note: board is depended on what upper project'name.
+
+4) make every file on the web be tracked by git.
+>>>git add .
+
+5)add files tracked  to git repository and name this move as "init commit"
+
+>>> git commit -am "init commit"
+
+6)be ready for upload files to Heroku!
+
+>>>git push heroku master
+
+(at this moment, Heroku server would install numerous packages according to "requirements.txt" , and then upload the files in Git repository except for files in ".gitgnore.".)
+(after finilizing this step, u have completed the operation of aniable.)
+
+7) to make Heroku execute your website.
+>>>heroku ps:scale web=1
+
+
+8) to see whick website openning
+>>>heroku ps
+
+
+9) testing website
+>>>heroku open
+
+10) u will find out a brandnew website opened automatically, and it's web address is name by "https://app u create on heroku.herokuapp.com/".
+if u wanna see other website definded in url.py, u can type web address like,
+ "https://app u create on heroku.herokuapp.com/index/"
+  
+
+
+##############end the server and restart
+ at the project name folder(for example "boardhero"), type programs as bellow in the bash.
+
+1)>>>heroku ps:scale web=0
+2)>>>heroku logout
+
+
+ready to restart
+1)>>>heroku login
+2)>>>heroku git:remote -a board5566    #webserver's app that u had already created, for example "board5566".
+3)>>>heroku config:set DJANGO_SETTINGS_MODULE=board.prod_settings    #note: board is depended on what upper project'name.
+4)>>>heroku ps:scale web=1
+5)>>>heroku open
+
+
+
+##############whenever u wanna have local files modified to be in sync with ones on heroku
+
+1) please renew files in venv/project name
+2)>>> heroku login
+3)>>> git add .
+4)>>> git commit -am "modify XXX"      #note: u can name every words u want in " ".
+5)>>> git push heroku master
+6)>>> heroku git:remote -a board5566    #webserver's app that u had already created, for example "board5566".
+7)>>> heroku config:set DJANGO_SETTINGS_MODULE=board.prod_settings    #note: board is depended on what upper project'name.
+8)>>> heroku ps:scale web=1
+9)>>> heroku open
+
+

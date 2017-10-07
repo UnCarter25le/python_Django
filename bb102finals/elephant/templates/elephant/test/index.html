@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--
+	Interphase by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SEARCH HOUSE</title>
+    {% load staticfiles %}        
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+    <script src="{% static "js/jquery.min.js"%}"></script>
+    <script src="{% static "js/skel.min.js"%}"></script>
+    <script src="{% static "js/skel-layers.min.js"%}"></script>
+    <script src="{% static "js/init.js"%}"></script>
+
+        <link rel="stylesheet" href="{% static "css/skel.css"%}"  />
+        <link rel="stylesheet" href="{% static "css/style.css"%}" />
+        <link rel="stylesheet" href="{% static "css/style-xlarge.css"%} />
+
+    
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "css/ie/v8.css"%}" /><![endif]-->
+</head>
+
+<body class="landing">
+    <!-- Header -->
+    <header id="header">
+        <h1><a href="index.html">SEARCH</a></h1>
+        <nav id="nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">page1</a></li>
+                <li><a href="#">page2</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Banner -->
+    <section id="banner">
+        <h2>讓我們為您找尋最合適的家</h2>
+        <p>這是一個讓人舒服且非常聰明的房屋搜尋網.</p>
+        <ul class="actions">
+            <li>
+                <a href="#" class="button big">關於我們</a>
+            </li>
+        </ul>
+    </section>
+    <!-- One -->
+    <section id="one" class="wrapper style1 align-center">
+
+    </section>
+    <!-- Two -->
+    <section id="two" class="wrapper style2 align-center">
+        <div class="container">
+            <header>
+                <h2>讓我們開始吧！</h2>
+                <p>首先, 請選擇您想要的方式 .</p>
+            </header>
+            <div class="row">
+                <section class="feature 6u 12u$(small)">
+                    <table>
+                      <tr>
+                        <td>喵星人</td>
+                        <td>11公路</td>
+                        <td>吃貨</td>
+                      </tr>
+                      <tr>
+                        <td>運動達人</td>
+                        <td>購物文青</td>
+                        <td>安居</td>
+                      </tr>
+                    </table>
+                    <h3 class="title">分類選屋</h3>
+                    <div class="row">
+                        <ul>
+                            <button type="button" class="button alt big" data-toggle="modal" data-target=".bs-example-modal-lg">台北市</button>
+                            <p>100 間</p>
+                        </ul>
+                        <ul>
+                            <button type="button" class="button alt big" data-toggle="modal" data-target=".bs-example-modal-lg">新北市</button>
+                            <p>500 間</p>
+                        </ul>
+                        <ul>
+                            <button type="button" class="button alt big" disabled>準備中</button>
+                            <p>? 間</p>
+                        </ul>
+                    </div>
+                </section>
+                <section class="feature 6u$ 12u$(small)">
+                    <img class="image fit" src="images/pic03.jpg" alt="" />
+                    <h3 class="title">目的地選屋</h3>
+                    <p>請輸入地址:</p>
+                    <input type="text" name="address">
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+    		<div class="modal-content">
+				<p>test</p>
+				<div id="map" style="height: 750px; width: 895px; margin: 0px auto;"></div>
+    		</div>
+  		</div>
+	</div>
+
+    <script>
+    	var map;
+     	function initMap() {
+        	map = new google.maps.Map(document.getElementById('map'), {
+          		center: {lat: 25.0339079, lng: 121.5623212},
+          		zoom: 17
+        	});
+      	}
+
+      	$("#mapModal").on("shown.bs.modal", function () {initMap();});
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbAPbwuBJZHvMtdDmz-EFEE32lUDtSf8E&callback=initMap"
+    async defer></script>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <section class="4u 6u(medium) 12u$(small)">
+                    <h3>test</h3>
+                    <p>test</p>
+                    <ul class="alt">
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                    </ul>
+                </section>
+                <section class="4u 6u$(medium) 12u$(small)">
+                    <h3>test</h3>
+                    <p>test</p>
+                    <ul class="alt">
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                    </ul>
+                </section>
+                <section class="4u$ 12u$(medium) 12u$(small)">
+                    <h3>聯絡我們</h3>
+                    <ul class="icons">
+                        <li><a href="#" class="icon rounded fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="#" class="icon rounded fa-facebook"><span class="label">Facebook</span></a></li>
+                        <li><a href="#" class="icon rounded fa-google-plus"><span class="label">Google+</span></a></li>
+                    </ul>
+                    <ul class="tabular">
+                        <li>
+                            <h3>Address</h3> Zhongli Dist., Taoyuan City 320, Taiwan (R.O.C.)
+                        </li>
+                        <li>
+                            <h3>Mail</h3>
+                            <a href="#">someone@gmail.com</a>
+                        </li>
+                        <li>
+                            <h3>Phone</h3> (03) 000-0000
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static "https://code.jquery.com/jquery.js"%}"></script>
+    <script src="{% static "https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"%}"></script>
+</body>
+
+</html>

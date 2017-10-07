@@ -1,0 +1,1241 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>區級畫面</title>
+{% load staticfiles %} 
+<link href="{% static "css/bootstrap.css"%}" rel='stylesheet' type='text/css' />
+<!-- Custom Theme files -->
+<link href="{% static "css/style.css"%}" rel="stylesheet" type="text/css" media="all" />
+<!-- Custom Theme files -->
+<script src="{% static "js/jquery.min.js"%}"></script>
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="My Secret Spot Ui Kit Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android  Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--webfont-->
+<link href="//fonts.googleapis.com/css?family=Play:400,700" rel='stylesheet' type='text/css'>
+    <!-- chart -->
+<script src="{% static "js/Chart.js"%}"></script>
+<!-- //chart -->    
+<!----Calender -------->
+	<link rel="stylesheet" href="{% static "css/clndr.css"%}" type="text/css" />
+	<script src="{% static "js/underscore-min.js"%}" type="text/javascript"></script>
+	<script src="{% static "js/moment-2.2.1.js"%}" type="text/javascript"></script>
+	<script src="{% static "js/clndr.js"%}" type="text/javascript"></script>
+	<script src="{% static "js/site.js"%}" type="text/javascript"></script>
+<!----End Calender -------->
+<!-- googlemap -->
+<!-- 把async 從defer前面拿掉      這將會封鎖 API 的載入，直到 API 下載完成。 -->
+<script defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC51v5GnwpHdHT3zKWECngRXPrzKyYclyE&callback=loadGoogleMap"></script>
+<script language="javascript">
+    google.maps.event.addDomListener(window, 'load', loadGoogleMap); 
+        var map;  //地圖
+		var markers = [];
+        var outerCoords;
+        var center;
+        var latLng;
+        var marker;
+        var message;
+        var i=0;
+        var item;
+    function loadGoogleMap() { 
+// 第一個地圖，顯示所有物件。
+        var center = new google.maps.LatLng(25.03222,121.543343);  
+        var markers = []; 
+        var i=0;
+        map1 = new google.maps.Map(document.getElementById('map_div_1'), {  
+            zoom: 14,
+            center: center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP, 
+
+        });
+        
+        {% for item in all_daanpetsall %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+            var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+            var marker = new google.maps.Marker({
+                position: latLng,
+                title: "{{item.mapName}}",
+                // animation: google.maps.Animation.DROP,  //動畫方式
+                icon: iconBase + 'realestate_maps.png',  
+                map: map1
+               
+            });
+            markers.push(marker);  //將地標加入串列
+            //建立地標訊息視窗
+            var message = "<div class='markdiv'><div class='marktitle'>" + "{{item.mapName}}" + "</div>"  +"<br>連結："+"{{item.mapUrl}}"+"<br>每月租金："+"{{item.mapRent}}" +"<br>坪數："+"{{item.mapSpace}}"  +"<br>其他："+"{{item.mapPet}}"+"，"+"{{item.mapSmoke}}"+"，"+"{{item.mapCook}}"+ "<br><div class='contactinfo'>聯絡方式："+ "{{item.mapLandlord}}" +"<br>住址："+"{{item.mapAddress}}" + "</div><a href='#map_div' onclick='show_streeview()'><img src='http://cbk0.google.com/cbk?output=thumbnail&w=250&h=50&ll="+ {{item.mapLat}} +","+ {{item.mapLng}} +"'></a></div>"
+            attachMessage(i, message, latLng);
+            i++;
+        {% endfor %}
+        var info_window = [];  //訊息視窗陣列
+        function attachMessage(index, msg, latLng) {  //加入地標訊息視窗
+            google.maps.event.addListener(markers[index], 'click', function(event) {
+                close_other_makers(index);  //關閉其他地標訊息視窗
+                info_window[index] = new google.maps.InfoWindow({  //建立地標訊息視窗
+                    content: msg,
+                    maxWidth: 280
+                });
+                info_window[index].open(markers[index].getMap(), markers[index]);  //顯示地標訊息視窗
+                markers[index].getMap().panTo(latLng);  //將目前地標設為中心
+                panorama = markers[index].getMap().getStreetView();  //設定街景
+                panorama.setPosition(latLng);  //街景位置
+                panorama.setPov({  //建立街景
+                    heading: 0,
+                    zoom: 1,
+                    pitch: 0
+                });
+            });
+        }
+        function close_other_makers(index){  //關閉其他地標訊息視窗
+            var makers_count = markers.length;  //地標數量
+            for (var i=0;i<makers_count;i++){
+                if (i == index ) continue;  //如果是目前地標就跳過
+                if (info_window[i]) info_window[i].close();  //關閉地標訊息視窗
+                info_window[i] = null;  //清除地標訊息視窗
+            }
+        }
+        var outerCoords = [
+            {lat:  25.045087, lng: 121.532988}, // north west
+            {lat:  25.044387, lng: 121.556763}, // south west
+            {lat: 25.029301, lng: 121.557021},  // north east
+            {lat: 25.024168, lng: 121.552128}, // south east
+            {lat: 25.016779, lng: 121.559939},
+            {lat: 25.009312, lng: 121.552987},
+            {lat: 25.009701, lng: 121.537966},
+            {lat: 25.0280608, lng: 121.5198939},
+            {lat: 25.034628, lng: 121.524705},
+            {lat: 25.033228, lng: 121.532945},
+
+        ];
+        map1.data.add({geometry: new google.maps.Data.Polygon([outerCoords])})
+           
+// 第二個地圖，顯示萬元以下，套房物件。  markers
+var center = new google.maps.LatLng(25.03222,121.543343);  
+        var markers = []; 
+        var i=0;
+        map2 = new google.maps.Map(document.getElementById('map_div_2'), {  
+            zoom: 14,
+            center: center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP, 
+
+        });
+        
+        {% for item in all_daanpets10000 %}  //逐筆建立地標
+            var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+            var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+            var marker = new google.maps.Marker({
+                position: latLng,
+                title: "{{item.mapName}}",
+                // animation: google.maps.Animation.DROP,  //動畫方式
+                icon: iconBase + 'realestate_maps.png',  
+                map: map2
+               
+            });
+            markers.push(marker);  //將地標加入串列
+            // 建立地標訊息視窗
+            var message = "<div class='markdiv'><div class='marktitle'>" + "{{item.mapName}}" + "</div>"  +"<br>連結："+"{{item.mapUrl}}"+"<br>每月租金："+"{{item.mapRent}}" +"<br>週邊餐廳均價："+"{{item.mapAvgonfood}}"+"<br>坪數："+"{{item.mapSpace}}"  +"<br>其他："+"{{item.mapPet}}"+"，"+"{{item.mapSmoke}}"+"，"+"{{item.mapCook}}"+"<br>也屬於："+"11公路，運動達人，安居，購物文青，吃貨"+ "<br><div class='contactinfo'>聯絡方式："+ "{{item.mapLandlord}}" +"<br>住址："+"{{item.mapAddress}}" + "</div><a href='#map_div_2' onclick='show_streeview()'><img src='http://cbk0.google.com/cbk?output=thumbnail&w=250&h=50&ll="+ {{item.mapLat}} +","+ {{item.mapLng}} +"'></a></div>"
+            attachMessage(i, message, latLng);
+            i++;
+        {% endfor %}
+        var info_window = [];  //訊息視窗陣列
+        function attachMessage(index, msg, latLng) {  //加入地標訊息視窗
+            google.maps.event.addListener(markers[index], 'click', function(event) {
+                close_other_makers(index);  //關閉其他地標訊息視窗
+                info_window[index] = new google.maps.InfoWindow({  //建立地標訊息視窗
+                    content: msg,
+                    maxWidth: 280
+                });
+                info_window[index].open(markers[index].getMap(), markers[index]);  //顯示地標訊息視窗
+                markers[index].getMap().panTo(latLng);  //將目前地標設為中心
+                panorama = markers[index].getMap().getStreetView();  //設定街景
+                panorama.setPosition(latLng);  //街景位置
+                panorama.setPov({  //建立街景
+                    heading: 0,
+                    zoom: 1,
+                    pitch: 0
+                });
+            });
+        }
+        function close_other_makers(index){  //關閉其他地標訊息視窗
+            var makers_count = markers.length;  //地標數量
+            for (var i=0;i<makers_count;i++){
+                if (i == index ) continue;  //如果是目前地標就跳過
+                if (info_window[i]) info_window[i].close();  //關閉地標訊息視窗
+                info_window[i] = null;  //清除地標訊息視窗
+            }
+        }
+        var outerCoords = [
+            {lat:  25.045087, lng: 121.532988}, // north west
+            {lat:  25.044387, lng: 121.556763}, // south west
+            {lat: 25.029301, lng: 121.557021},  // north east
+            {lat: 25.024168, lng: 121.552128}, // south east
+            {lat: 25.016779, lng: 121.559939},
+            {lat: 25.009312, lng: 121.552987},
+            {lat: 25.009701, lng: 121.537966},
+            {lat: 25.0280608, lng: 121.5198939},
+            {lat: 25.034628, lng: 121.524705},
+            {lat: 25.033228, lng: 121.532945},
+
+        ];
+        map2.data.add({geometry: new google.maps.Data.Polygon([outerCoords])})
+
+// 第三個地圖
+        // var center = new google.maps.LatLng(25.03222,121.543343);  
+        // var markers2 = []; 
+        // var i=0;
+        // map5 = new google.maps.Map(document.getElementById('map_div_5'), {  
+        //     zoom: 14,
+        //     center: center,
+        //     mapTypeId: google.maps.MapTypeId.ROADMAP, 
+
+        // });
+
+
+        // 利用googlemap2法(地圖讀入時，預先載入一個標的)，但要將map3前的var去掉，否則其他設施無法標上去      
+        map3 = new google.maps.Map(document.getElementById('map_div_3'), {   
+            zoom: 14,
+            center: new google.maps.LatLng(25.0306232,121.5382424),
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoomControl: true,
+            mapTypeControl: true,
+            scaleControl: true,
+            streetViewControl: true,
+        });
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var marker3 = new google.maps.Marker({
+            position: new google.maps.LatLng(25.0306232,121.5382424),
+            title: "大安森林公園站稀有電梯獨立衛浴溫馨套房",
+            animation: google.maps.Animation.DROP,
+            map: map3,
+            icon: iconBase + 'realestate_maps.png',  
+            draggable:true,
+        });
+        
+        var infowindow = new google.maps.InfoWindow();
+        infowindow.setContent("<h3>大安森林公園站稀有電梯獨立衛浴溫馨套房</h3>\
+        <p>連結：https://rent.591.com.tw/rent-detail-5446807.html\
+                                每月租金：9500元\
+                                週邊餐廳均價：168元\
+                                坪數：3.50坪\
+                                其他：可養寵物，不可吸煙，可烹開伙\
+                                聯絡方式：詹小姐\
+                                住址：台北市大安區建國南路二段</p>");
+        google.maps.event.addListener(marker3, 'click', function(event) {
+            infowindow.open(map3, marker3);
+        });
+        
+    // {% for item in all_daanpets10000 %}  //逐筆建立地標
+    //     var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+    //     var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+    //     var marker = new google.maps.Marker({
+    //         position: latLng,
+    //         title: "{{item.mapName}}",
+    //         // animation: google.maps.Animation.DROP,  //動畫方式
+    //         icon: iconBase + 'realestate_maps.png',  
+    //         map: map5
+           
+    //     });
+    //     markers.push(marker);  //將地標加入串列
+    // {% endfor %}
+    
+    var outerCoords = [
+        {lat:  25.045087, lng: 121.532988}, // north west
+        {lat:  25.044387, lng: 121.556763}, // south west
+        {lat: 25.029301, lng: 121.557021},  // north east
+        {lat: 25.024168, lng: 121.552128}, // south east
+        {lat: 25.016779, lng: 121.559939},
+        {lat: 25.009312, lng: 121.552987},
+        {lat: 25.009701, lng: 121.537966},
+        {lat: 25.0280608, lng: 121.5198939},
+        {lat: 25.034628, lng: 121.524705},
+        {lat: 25.033228, lng: 121.532945},
+
+    ];
+    map3.data.add({geometry: new google.maps.Data.Polygon([outerCoords])})
+
+
+
+
+
+
+
+
+    }  //這個不能刪掉，連接loadgooglemap的
+    
+// 另一個loadgooglemap
+function loadGoogleMap2() { 
+var center = new google.maps.LatLng(25.03222,121.543343);  
+        var markers = []; 
+        var i=0;
+        map2 = new google.maps.Map(document.getElementById('map_div_2'), {  
+            zoom: 14,
+            center: center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP, 
+
+        });
+        
+        {% for item in all_daanpets10000 %}  //逐筆建立地標
+            var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+            var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+            var marker = new google.maps.Marker({
+                position: latLng,
+                title: "{{item.mapName}}",
+                // animation: google.maps.Animation.DROP,  //動畫方式
+                icon: iconBase + 'realestate_maps.png',  
+                map: map2
+               
+            });
+            markers.push(marker);  //將地標加入串列
+            // 建立地標訊息視窗
+            var message = "<div class='markdiv'><div class='marktitle'>" + "{{item.mapName}}" + "</div>"  +"<br>連結："+"{{item.mapUrl}}"+"<br>每月租金："+"{{item.mapRent}}" +"<br>週邊餐廳均價："+"{{item.mapAvgonfood}}"+"<br>坪數："+"{{item.mapSpace}}"  +"<br>其他："+"{{item.mapPet}}"+"，"+"{{item.mapSmoke}}"+"，"+"{{item.mapCook}}"+"<br>也屬於："+"11公路，運動達人，安居，購物文青，吃貨"+ "<br><div class='contactinfo'>聯絡方式："+ "{{item.mapLandlord}}" +"<br>住址："+"{{item.mapAddress}}" + "</div><a href='#map_div_2' onclick='show_streeview()'><img src='http://cbk0.google.com/cbk?output=thumbnail&w=250&h=50&ll="+ {{item.mapLat}} +","+ {{item.mapLng}} +"'></a></div>"
+            attachMessage(i, message, latLng);
+            i++;
+        {% endfor %}
+        var info_window = [];  //訊息視窗陣列
+        function attachMessage(index, msg, latLng) {  //加入地標訊息視窗
+            google.maps.event.addListener(markers[index], 'click', function(event) {
+                close_other_makers(index);  //關閉其他地標訊息視窗
+                info_window[index] = new google.maps.InfoWindow({  //建立地標訊息視窗
+                    content: msg,
+                    maxWidth: 280
+                });
+                info_window[index].open(markers[index].getMap(), markers[index]);  //顯示地標訊息視窗
+                markers[index].getMap().panTo(latLng);  //將目前地標設為中心
+                panorama = markers[index].getMap().getStreetView();  //設定街景
+                panorama.setPosition(latLng);  //街景位置
+                panorama.setPov({  //建立街景
+                    heading: 0,
+                    zoom: 1,
+                    pitch: 0
+                });
+            });
+        }
+        function close_other_makers(index){  //關閉其他地標訊息視窗
+            var makers_count = markers.length;  //地標數量
+            for (var i=0;i<makers_count;i++){
+                if (i == index ) continue;  //如果是目前地標就跳過
+                if (info_window[i]) info_window[i].close();  //關閉地標訊息視窗
+                info_window[i] = null;  //清除地標訊息視窗
+            }
+        }
+        var outerCoords = [
+            {lat:  25.045087, lng: 121.532988}, // north west
+            {lat:  25.044387, lng: 121.556763}, // south west
+            {lat: 25.029301, lng: 121.557021},  // north east
+            {lat: 25.024168, lng: 121.552128}, // south east
+            {lat: 25.016779, lng: 121.559939},
+            {lat: 25.009312, lng: 121.552987},
+            {lat: 25.009701, lng: 121.537966},
+            {lat: 25.0280608, lng: 121.5198939},
+            {lat: 25.034628, lng: 121.524705},
+            {lat: 25.033228, lng: 121.532945},
+
+        ];
+        map2.data.add({geometry: new google.maps.Data.Polygon([outerCoords])})
+} //loadgooglemap2的，不能刪
+// 第三個loadgooglemap
+function loadGoogleMap3() {
+    map3 = new google.maps.Map(document.getElementById('map_div_3'), {   
+            zoom: 14,
+            center: new google.maps.LatLng(25.0306232,121.5382424),
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoomControl: true,
+            mapTypeControl: true,
+            scaleControl: true,
+            streetViewControl: true,
+        });
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var marker3 = new google.maps.Marker({
+            position: new google.maps.LatLng(25.0306232,121.5382424),
+            title: "大安森林公園站稀有電梯獨立衛浴溫馨套房",
+            animation: google.maps.Animation.DROP,
+            map: map3,
+            icon: iconBase + 'realestate_maps.png',  
+            draggable:true,
+        });
+        
+        var infowindow = new google.maps.InfoWindow();
+        infowindow.setContent("<h3>大安森林公園站稀有電梯獨立衛浴溫馨套房</h3>\
+        <p>連結：https://rent.591.com.tw/rent-detail-5446807.html\
+                                每月租金：9500元\
+                                週邊餐廳均價：168元\
+                                坪數：3.50坪\
+                                其他：可養寵物，不可吸煙，可烹開伙\
+                                聯絡方式：詹小姐\
+                                住址：台北市大安區建國南路二段</p>");
+        google.maps.event.addListener(marker3, 'click', function(event) {
+            infowindow.open(map3, marker3);
+        });
+        
+    // {% for item in all_daanpets10000 %}  //逐筆建立地標
+    //     var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+    //     var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+    //     var marker = new google.maps.Marker({
+    //         position: latLng,
+    //         title: "{{item.mapName}}",
+    //         // animation: google.maps.Animation.DROP,  //動畫方式
+    //         icon: iconBase + 'realestate_maps.png',  
+    //         map: map5
+           
+    //     });
+    //     markers.push(marker);  //將地標加入串列
+    // {% endfor %}
+    
+    var outerCoords = [
+        {lat:  25.045087, lng: 121.532988}, // north west
+        {lat:  25.044387, lng: 121.556763}, // south west
+        {lat: 25.029301, lng: 121.557021},  // north east
+        {lat: 25.024168, lng: 121.552128}, // south east
+        {lat: 25.016779, lng: 121.559939},
+        {lat: 25.009312, lng: 121.552987},
+        {lat: 25.009701, lng: 121.537966},
+        {lat: 25.0280608, lng: 121.5198939},
+        {lat: 25.034628, lng: 121.524705},
+        {lat: 25.033228, lng: 121.532945},
+
+    ];
+    map3.data.add({geometry: new google.maps.Data.Polygon([outerCoords])})
+} //loadgooglemap3的，不能刪
+    function daan_burglar() {  //加入地標  地圖2
+        {% for item in all_burglar %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'caution_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_temple() {  //加入地標   地圖2
+        {% for item in all_temple %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'volcano_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_noise() {  //加入地標   地圖2
+        {% for item in all_noise %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'phone_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_narrowroadway() {  //加入地標   地圖2
+        {% for item in all_narrowroadway %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'earthquake_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_pets2() {  //加入地標   地圖2
+        {% for item in all_pets %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'hospitals_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_gogoro2() {  //加入地標   地圖2
+        {% for item in all_gogoro %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'motorcycling_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_markets2() {  //加入地標   地圖2
+        {% for item in all_daanmarkets %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'dollar_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_police2() {  //加入地標  地圖2
+        {% for item in all_police %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'police_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_firedepart2() {  //加入地標  地圖2
+        {% for item in all_firedepart %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'firedept_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_funeral() {  //加入地標  地圖2
+        {% for item in all_daanfuneralall %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'man_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_gas() {  //加入地標  地圖2
+        {% for item in all_daangas %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'campfire_maps.png',  
+            map: map2,
+        });
+        {% endfor %}
+    }
+    function daan_pets() {  //加入地標   地圖3
+        {% for item in all_pets %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'hospitals_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_gogoro() {  //加入地標   地圖3
+        {% for item in all_gogoro %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'motorcycling_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_markets3() {  //加入地標   地圖3
+        {% for item in all_daanmarkets %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'dollar_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_police() {  //加入地標  地圖3
+        {% for item in all_police %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'police_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_firedepart() {  //加入地標  地圖3
+        {% for item in all_firedepart %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'firedept_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    
+    function daan_funeral3() {  //加入地標  地圖3
+        {% for item in all_daanfuneralall %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'man_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_gas3() {  //加入地標  地圖3
+        {% for item in all_daangas %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'campfire_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_burglar3() {  //加入地標  地圖3
+        {% for item in all_burglar %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'caution_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_temple3() {  //加入地標   地圖3
+        {% for item in all_temple %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'volcano_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_noise3() {  //加入地標   地圖3
+        {% for item in all_noise %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'phone_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+    function daan_narrowroadway3() {  //加入地標   地圖3
+        {% for item in all_narrowroadway %}  //逐筆建立地標
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: "{{item.mapName}}",
+            // animation: google.maps.Animation.DROP,  //動畫方式
+            icon: iconBase + 'earthquake_maps.png',  
+            map: map3,
+        });
+        {% endfor %}
+    }
+   
+    function show_streeview() {  //點擊照片進街景
+        // street.setVisible(true);
+        panorama.setVisible(true);
+    }
+
+    function show_streevie_buttun() {  //顯示街景
+        street.setVisible(true);
+        
+    }
+</script>
+
+
+<!-- googlemap end -->
+
+
+</head>
+<body>
+	<div id="header_1">
+		<div class="container">
+			<div class="logo text-center">
+				<a href="#"><img src="{% static "/static/images/elephant2_2.png"%}" alt="" /></a>
+			</div>
+			<div class="header-bottom">
+				<div class="header-head text-center">
+                    <h1>ELEPHANT IN THE ROOM</h1>
+				</div>				
+			</div>
+		</div>
+	</div>
+    <div class="content">
+        <div class="container">
+            <div class="span_1_by_2">
+				<div class="col-md-6 onehalf">					
+                    <div class="submit-form">
+						<h1 class="tlt">大安區</h1>
+						<form>
+								<div id="lefthalf">
+                                    <h3><span>套房</span></h3>
+                                    <div class="weather">
+                                            <!-- <h3 class="tlt1">套房</h3> -->
+                                            <div class="t-weather">
+                                                <h5>274 間</h5>							
+                                            </div>
+                                         </div>
+                            </div>
+								<div id="righthalf">
+                                    <h3><span>雅房</span></h3>
+                                    <div class="weather">
+                                            <!-- <h3 class="tlt1">雅房</h3> -->
+                                            <div class="t-weather">
+                                                <h5>2間</h5>							
+                                            </div>
+                                         </div>
+                            </div>
+								<div class="clearfix"></div>
+                        </form>
+					</div>
+                    <div class="world_map">
+                        <h1 class="tlt">大安區地圖</h1>
+                        
+                            <div id="map_div_1" style="height:530px; width:520px; border:2px solid black;"></div> 
+                            
+
+                        </div>
+			           
+			        </div>                    
+                </div>
+				<div class="col-md-6 secoundhalf">
+                    <div class="world_map">
+					    <h1 class="tlt">請輸入租金預算</h1>
+						<div class="map_container"><div id="vmap" style="width: 100%; height:50px;">
+                            <script src="{% static "js/menu_jquery.js"%}"></script>
+                            <div class="search">
+                                    <div class = "color1" style="font-size: x-large">
+                                <input type="text" value="例如：3000～5000" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
+                                <a href = "#map_div_2"  ><input type="submit" value="">
+                                </a>
+                            </div>>
+                            </div>                         
+                        </div>
+                       </div>
+                    </div>
+                    
+					<div class="col-md-6 spanfirst">
+                        
+                            <div class="settings">
+                            <!--    <h3 class="tlt"></h3> -->
+                                <div class="setting-one">
+                                    <h3>套房</h3>
+                                   <div class="demo5">
+                                      <div class="switch demo3">
+                                        <input type="checkbox">
+                                        <label><i></i></label>
+                                      </div>	
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="setting-two">
+                                    <h3>雅房</h3>
+                                   <div class="demo6">									
+                                      <div class="switch demo3">
+                                        <input type="checkbox" >
+                                        <label><i></i></label>
+                                      </div>			
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                    <!--			<a class="advancedsettings" href="#">Advanced Settings</a> -->
+                        </div>                    
+                        <div class="profile">                    
+                            <h1 class="tlt">正向指標</h1>
+                            <div class="follow">
+                                <h3><a class="f-left" href="#map_div_1">動物醫院</a></h3>
+                                 <h3><a class="f-right" href="#map_div_1">GORO充電站</a></h3>
+                                 <h3><a class="f-left" href="#map_div_1">警察局</a></h3>
+                                 <h3><a class="f-right" href="#map_div_1">消防局</a></h3>
+                                 <h3><a class="f-left" href="#map_div_1">超市</a></h3>
+                                 <h3><a class="f-right" href="#map_div_1">公園</a>
+                                <div class="clearfix"></div>
+                            </div>
+                       </div>
+                   </div>
+                   <div class="col-md-6 spansecound">
+                       <div class="world_map">
+                               <h3 class="tlt"></h3>
+                               <div class="map_container"><div id="vmap" style="width: 100%; height:ˋ0px;">
+                                   <h3><a class="advancedsettings" href="#">加入追蹤清單</a></h3>
+                                   <h3><a class="advancedsettings" href="/one_by_case/">前往此物件</a></h3>
+                               </div>
+                               </div>
+                        </div>
+                        
+                       <div class="profile">                    
+                            <h1 class="tlt">負向指標</h1>
+                            <div class="follow">
+                                 <h3><a class="f-left" href="#map_div_1">住宅竊盜</a></h3>
+                                 <h3><a class="f-right" href="#map_div_1">狹小巷道</a></h3>
+                                 <h3><a class="f-left" href="#map_div_1">噪音通報</a></h3>
+                                 <h3><a class="f-right" href="#map_div_1">宗廟</a></h3>
+                                 <h3><a class="f-left" href="#map_div_1">瓦斯行</a></h3>
+                                 <h3><a class="f-right" href="#map_div_1">殯葬</a></h3>
+                                <div class="clearfix"></div>
+                            </div>
+                       </div>
+				   </div>
+                   <div class="col-md-6 spanthird">
+                       
+				   </div>
+                   <div class="col-md-6 spanfourth">
+                       
+				   </div>      
+				<div class="clearfix"></div>
+			</div>   
+        </div>
+    </div>
+        <div class="container">
+            <div class="col-md-12 footer-bottom">
+				    <div class="copyrights text-center">
+					   <p>中壢資策會BB102 版權所有 @2017 IIIBB102 All Rights Reserved</p>			
+				    </div>
+                    </div>
+            <div class="footer">
+                <div class="footer-top">
+                    
+                    <div class="footer-grids">
+                            <div class="col-md-4 footer-grid">
+                                 <div class="follow">
+                                    <h3><a class="f-left" href="/city_05/">上一頁</a></h3>
+                                    <div class="clearfix"></div>
+                                 </div>
+
+                            </div>
+                            <div class="col-md-4 footer-grid">
+                            <!--    <div class="follow">
+                                    <a class="f-right" href="#">回首頁</a>
+                                    <div class="clearfix"></div>
+                                 </div> -->
+
+                            </div>
+                            <div class="col-md-4 footer-grid">
+                                <div class="follow">
+                                    <h3><a class="rrrrr" href="/one_by_case/">下一頁</a></h3>
+                                    <div class="clearfix"></div>
+                                 </div>
+                                 <div class="follow">
+                                        <h3><a class="rrrrr" href="/home/">回首頁</a></h3>
+                                        <div class="clearfix"></div>
+                                     </div>
+
+                            </div>
+                        
+                        </div>                                 
+                </div>
+            </div>
+        </div>
+            
+    <div id="header_2">
+		<div class="container">
+			<div class="logo text-center">
+<!--				<a href="index.html"><img src="images/elephant2_2.png" alt="" /></a>  -->
+			</div>
+			<div class="header-bottom">
+				<div class="header-head text-center">
+					<h1>ELEPHANT IN THE ROOM</h1>
+				</div>				
+			</div>
+		</div>
+	</div>
+    <div class="content">
+        <div class="container">
+            <div class="span_1_by_2">
+				<div class="col-md-6 onehalf">					
+                <!--    <div class="submit-form">
+						<h1 class="tlt">大安區</h1>
+						<form>
+								<div id="lefthalf">
+									<h3><span>套房</span></h3>
+									<input type="text" class="text" value="enter" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'enter your first and last name';}">
+								</div>
+								<div id="righthalf">
+									<h3><span>雅房</span></h3>
+									<input type="text" class="text" value="enter" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'enter your email adress here';}">
+								</div>
+								<div class="clearfix"></div>
+                        </form>
+					</div>  -->
+                    <div class="world_map">
+                        <h1 class="tlt">大安區地圖</h1>
+                      
+                                <div id="map_div_2" style="height:530px; width:520px; border:2px solid black;"></div> 
+                                <input type="button" value="重新整理" onclick="loadGoogleMap2();" style="margin:10px;">
+                                <a href = "#map_div_3">
+                                <input type="button" value="downward-3"  style="margin:10px;"></a>
+                        </div>
+			           
+			        </div>                    
+                </div>
+				<div class="col-md-6 secoundhalf">
+                <!--    <div class="world_map">
+					    <h1 class="tlt">請輸入租金預算</h1>
+						<div class="map_container"><div id="vmap" style="width: 100%; height:30px;">
+                            <script src="js/menu_jquery.js"></script>
+                            <div class="search">
+                                <form>
+                                <input type="text" value="例如：3000～5000" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
+                                <input type="submit" value="">
+                                </form>
+                            </div>                         
+                        </div>
+                       </div>
+                    </div>  -->
+                    
+					<div class="col-md-6 spanfirst">
+                        
+                            <div class="settings">
+                                <!--    <h3 class="tlt"></h3> -->
+                                <div class="setting-one">
+                                    <h3>套房</h3>
+                                   <div class="demo5">
+                                      <div class="switch demo3">
+                                        <input type="checkbox">
+                                        <label><i></i></label>
+                                      </div>	
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="setting-two">
+                                    <h3>雅房</h3>
+                                   <div class="demo6">									
+                                      <div class="switch demo3">
+                                        <input type="checkbox" checked=" " >
+                                        <label><i></i></label>
+                                      </div>			
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                    <!--			<a class="advancedsettings" href="#">Advanced Settings</a> -->
+                        </div>                    
+                        <div class="profile">                    
+                            <h1 class="tlt">正向指標</h1>
+                            <div class="follow">
+                                <h3><a class="f-left" onclick="daan_pets2();">動物醫院</a></h3>
+                                 <h3><a class="f-right" onclick="daan_gogoro2();">GORO充電站</a></h3>
+                                 <h3><a class="f-left" onclick="daan_police2();">警察局</a></h3>
+                                 <h3><a class="f-right" onclick="daan_firedepart2();">消防局</a></h3>
+                                 <h3><a class="f-left" onclick="daan_markets2();">超市</a></h3>
+                                 <h3><a class="f-right" href="#map_div_2">公園</a>
+                                <div class="clearfix"></div>
+                            </div>
+                       </div>
+                   </div>
+                   <div class="col-md-6 spansecound">
+                       <div class="world_map">
+                               <h3 class="tlt"></h3>
+                               <div class="map_container"><div id="vmap" style="width: 100%; height:ˋ0px;">
+                                   <h3><a class="advancedsettings" href="#map_div_2">加入追蹤清單</a></h3>
+                                   <h3><a class="advancedsettings" href="/one_by_case/">前往此物件</a></h3>
+                               </div>
+                               </div>
+                        </div>
+                       
+                       <div class="profile">                    
+                            <h1 class="tlt">負向指標</h1>
+                            <div class="follow">
+                                 <h3><a class="f-left" onclick="daan_burglar();">住宅竊盜</a></h3>
+                               
+                                 <h3><a class="f-right" onclick="daan_narrowroadway();">狹小巷道</a></h3>
+                                 <h3><a class="f-left" onclick="daan_noise();">噪音通報</a></h3>
+                                 <h3><a class="f-right" onclick="daan_temple();">宗廟</a></h3>
+                                 <h3><a class="f-left" onclick="daan_gas();">瓦斯行</a></h3>
+                                 <h3><a class="f-right" onclick="daan_funeral();">殯葬</a></h3>
+                                <div class="clearfix"></div>
+                            </div>
+                       </div>
+				   </div>
+                   <div class="col-md-6 spanthird">
+                       
+				   </div>
+                   <div class="col-md-6 spanfourth">
+                       
+				   </div>      
+				<div class="clearfix"></div>
+			</div>   
+        </div>
+    </div>
+        <div class="container">
+            <div class="col-md-12 footer-bottom">
+				    <div class="copyrights text-center">
+					   <p>中壢資策會BB102 版權所有 @2017 IIIBB102 All Rights Reserved</p>			
+				    </div>
+                    </div>
+            <div class="footer">
+                <div class="footer-top">
+                    
+                    <div class="footer-grids">
+                            <div class="col-md-4 footer-grid">
+                                 <div class="follow">
+                                    <h3><a class="f-left" href="/city_05/">上一頁</a></h3>
+                                    <div class="clearfix"></div>
+                                 </div>
+
+                            </div>
+                            <div class="col-md-4 footer-grid">
+                            <!--    <div class="follow">
+                                    <a class="f-right" href="#">回首頁</a>
+                                    <div class="clearfix"></div>
+                                 </div> -->
+
+                            </div>
+                            <div class="col-md-4 footer-grid">
+                                <div class="follow">
+                                    <h3><a class="rrrrr" href="/one_by_case/">下一頁</a></h3>
+                                    <div class="clearfix"></div>
+                                 </div>
+                                 <div class="follow">
+                                        <h3><a class="rrrrr" href="/home/">回首頁</a></h3>
+                                        <div class="clearfix"></div>
+                                     </div>
+
+                            </div>
+                        
+                        </div>                                 
+                </div>
+            </div>
+        </div>
+            
+            
+    <div id="header_3">
+		<div class="container">
+			<div class="logo text-center">
+<!--				<a href="index.html"><img src="images/elephant2_2.png" alt="" /></a>  -->
+			</div>
+			<div class="header-bottom">
+				<div class="header-head text-center">
+					<h1>ELEPHANT IN THE ROOM</h1>
+				</div>				
+			</div>
+		</div>
+	</div>
+    <div class="content">
+        <div class="container">
+            <div class="span_1_by_2">
+				<div class="col-md-6 onehalf">					
+                <!--    <div class="submit-form">
+						<h1 class="tlt">大安區</h1>
+						<form>
+								<div id="lefthalf">
+									<h3><span>套房</span></h3>
+									<input type="text" class="text" value="enter" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'enter your first and last name';}">
+								</div>
+								<div id="righthalf">
+									<h3><span>雅房</span></h3>
+									<input type="text" class="text" value="enter" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'enter your email adress here';}">
+								</div>
+								<div class="clearfix"></div>
+                        </form>
+					</div>  -->
+                    <div class="world_map">
+                        <h1 class="tlt">大安區地圖</h1>
+                        
+                                <div id="map_div_3" style="height:530px; width:520px; border:2px solid black;"></div> 
+                                <input type="button" value="重新整理" onclick="loadGoogleMap3();" style="margin:10px;">
+                                <a href = "#map_div_3">
+                                    <input type="button" value="done"  style="margin:10px;"></a>
+                        
+                        </div>
+			           
+			        </div>                    
+                </div>
+				<div class="col-md-6 secoundhalf">
+                <!--    <div class="world_map">
+					    <h1 class="tlt">請輸入租金預算</h1>
+						<div class="map_container"><div id="vmap" style="width: 100%; height:30px;">
+                            <script src="js/menu_jquery.js"></script>
+                            <div class="search">
+                                <form>
+                                <input type="text" value="例如：3000～5000" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
+                                <input type="submit" value="">
+                                </form>
+                            </div>                         
+                        </div>
+                       </div>
+                    </div>  -->
+                    
+					<div class="col-md-6 spanfirst">
+                        
+                            <div class="settings">
+                                <!--    <h3 class="tlt"></h3> -->
+                                <div class="setting-one">
+                                    <h3>套房</h3>
+                                   <div class="demo5">
+                                      <div class="switch demo3">
+                                        <input type="checkbox">
+                                        <label><i></i></label>
+                                      </div>	
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="setting-two">
+                                    <h3>雅房</h3>
+                                   <div class="demo6">									
+                                      <div class="switch demo3">
+                                        <input type="checkbox" checked=" ">
+                                        <label><i></i></label>
+                                      </div>			
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                    <!--			<a class="advancedsettings" href="#">Advanced Settings</a> -->
+                        </div>                    
+                        <div class="profile">                    
+                            <h1 class="tlt">正向指標</h1>
+                            <div class="follow">
+                                <h3><a class="f-left" onclick="daan_pets();">動物醫院</a></h3>
+                                 <h3><a class="f-right" onclick="daan_gogoro();">GORO充電站</a></h3>
+                                 <h3><a class="f-left" onclick="daan_police();">警察局</a></h3>
+                                 <h3><a class="f-right"onclick="daan_firedepart();">消防局</a></h3>
+                                 <h3><a class="f-left" onclick="daan_markets3();">超市</a></h3>
+                                 <h3><a class="f-right" href="#map_div_3">公園</a>
+                                <div class="clearfix"></div>
+                            </div>
+                       </div>
+                   </div>
+                   <div class="col-md-6 spansecound">
+                       <div class="world_map">
+                               <h3 class="tlt"></h3>
+                               <div class="map_container"><div id="vmap" style="width: 100%; height:ˋ0px;">
+                                   <h3><a class="advancedsettings" href="#map_div_3">加入追蹤清單</a></h3>
+                                   <h3><a class="advancedsettings" href="/one_by_case/">前往此物件</a></h3>
+                               </div>
+                               </div>
+                        </div>
+                       
+                       <div class="profile">                    
+                            <h1 class="tlt">負向指標</h1>
+                            <div class="follow">
+                                 <h3><a class="f-left" onclick="daan_burglar3();">住宅竊盜</a></h3>
+                                 <h3><a class="f-right" onclick =" daan_narrowroadway3();">狹小巷道</a></h3>
+                                 <h3><a class="f-left" onclick="daan_noise3();">噪音通報</a></h3>
+                                 <h3><a class="f-right" onclick="daan_temple3();">宗廟</a></h3>
+                                 <h3><a class="f-left" onclick="daan_gas3();">瓦斯行</a></h3>
+                                 <h3><a class="f-right" onclick="daan_funeral3();">殯葬</a></h3>
+                                <div class="clearfix"></div>
+                            </div>
+                       </div>
+				   </div>
+                   <div class="col-md-6 spanthird">
+                       
+				   </div>
+                   <div class="col-md-6 spanfourth">
+                       
+				   </div>      
+				<div class="clearfix"></div>
+			</div>   
+        </div>
+    </div>
+        <div class="container">
+            <div class="col-md-12 footer-bottom">
+				    <div class="copyrights text-center">
+					   <p>中壢資策會BB102 版權所有 @2017 IIIBB102 All Rights Reserved</p>			
+				    </div>
+                    </div>
+            <div class="footer">
+                <div class="footer-top">
+                    
+                    <div class="footer-grids">
+                            <div class="col-md-4 footer-grid">
+                                 <div class="follow">
+                                    <h3><a class="f-left" href="/city_05/">上一頁</a></h3>
+                                    <div class="clearfix"></div>
+                                 </div>
+
+                            </div>
+                            <div class="col-md-4 footer-grid">
+                            <!--    <div class="follow">
+                                    <a class="f-right" href="#">回首頁</a>
+                                    <div class="clearfix"></div>
+                                 </div> -->
+
+                            </div>
+                            <div class="col-md-4 footer-grid">
+                                <div class="follow">
+                                    <h3><a class="rrrrr" href="/one_by_case/">下一頁</a></h3>
+                                    <div class="clearfix"></div>
+                                 </div>
+                                 <div class="follow">
+                                        <h3><a class="rrrrr" href="/home/">回首頁</a></h3>
+                                        <div class="clearfix"></div>
+                                     </div>
+
+                            </div>
+                        
+                        </div>                                 
+                </div>
+            </div>
+        </div>
+            
+            
+    
+            
+            
+        
+            
+            
+
+</body>
+</html>

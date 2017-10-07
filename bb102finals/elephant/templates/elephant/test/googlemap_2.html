@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Google地圖</title>
+	<script async defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC51v5GnwpHdHT3zKWECngRXPrzKyYclyE&callback=loadGoogleMap"></script>
+	<!-- <script async defer type="text/javascript" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyC51v5GnwpHdHT3zKWECngRXPrzKyYclyE&callback=loadGoogleMap&origin=Oslo+Norway&destination=Telemark+Norway&avoid=tolls|highways"></script> -->
+	
+	
+	<script language="javascript">
+		google.maps.event.addDomListener(window, 'load', loadGoogleMap);  //啟動GoogleMap
+
+		var marker;
+		var map;
+		var i=0;
+		function loadGoogleMap() {
+			// 一頁顯示多個地圖，就要有多個var map物件，物件參考的id要不一樣。 map1,marker1
+			var map1 = new google.maps.Map(document.getElementById('map_div'), {
+				zoom: 16,
+				center: new google.maps.LatLng(23.865008, 120.911559),
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				zoomControl: true,
+				mapTypeControl: true,
+				scaleControl: true,
+				streetViewControl: true,
+			});
+
+
+
+			var marker1 = new google.maps.Marker({
+				position: new google.maps.LatLng(23.865008, 120.911559),
+				title: "日月潭水社",
+				animation: google.maps.Animation.DROP,
+				map: map1,
+				draggable:true,
+			});
+			
+			var infowindow = new google.maps.InfoWindow();
+			infowindow.setContent('<h3>日月潭水社</h3><p>日月潭最熱鬧的商圈</p>');
+			google.maps.event.addListener(marker1, 'click', function(event) {
+				infowindow.open(map1, marker1);
+			});
+
+
+
+			// ############ 第二個地圖
+			var map = new google.maps.Map(document.getElementById('map_div1'), {
+				zoom: 16,
+				center: new google.maps.LatLng(23.865008, 120.911559),
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				zoomControl: true,
+				mapTypeControl: true,
+				scaleControl: true,
+				streetViewControl: true,
+			});
+
+			var marker = new google.maps.Marker({
+				position: new google.maps.LatLng(23.865008, 120.911559),
+				title: "日月潭水社",
+				animation: google.maps.Animation.DROP,
+				map: map,
+				draggable:true,
+			});
+			
+			var infowindow = new google.maps.InfoWindow();
+			infowindow.setContent('<h3>日月潭水社</h3><p>日月潭最熱鬧的商圈</p>');
+			google.maps.event.addListener(marker, 'click', function(event) {
+				infowindow.open(map, marker);
+			});
+		}
+		
+	</script>
+</head>
+<body>
+	<div id="map_div" style="width:500px; height:400px;"></div>
+	<!-- 第二個地圖 -->
+	<div id="map_div1" style="width:500px; height:400px;"></div>  
+
+<br>
+	<!-- 第三個地圖，直接內嵌在body中;使用的是embbed法 -->
+	<div id="map_div3">
+	<iframe
+	width="650"
+	height="450"
+	frameborder="2" style="border:2"
+	src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyCRzUDaJt0DE4ezRstoFvW_x7NXIllBY74&origin=大安森林公園+106台北市大安區新生南路二段1號&destination=110台北市信義區信義路五段7號台北101&mode=transit&avoid=tolls|highways" allowfullscreen>
+  </iframe>
+</div>
+</body>
+</html>

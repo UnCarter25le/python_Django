@@ -1,0 +1,19 @@
+using googlemap2.html, u are able to see 
+1) how to show multiple maps at one page. 
+2) how to show heat map instead of normal icon. 
+3)how to make a map embbed in page and show the transit path on it. 
+4) how to show specific spot whenever reload the map.
+
+using daan_burglar.html, u are capable of see 
+1) how to load customised geojson on the map. 
+2)how to replace default ican by customised one. 
+3)how to type one button to load icans on the map.
+
+using daan_room_test.html, u can see 
+1) how to load multiple spots whenever reload the map.
+2)how to add specific description to the spot. 
+3)how to click the photo of the object and getting into the object's streetview.
+
+using index_googlemap, index_puli, googlemap1, googlemap2, googlemap3, u can see
+1) the basic way to active the googlemap on the page by javascript.
+2) how to start up streetview.

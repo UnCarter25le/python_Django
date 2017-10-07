@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Google地圖</title>
+	{% load staticfiles %}
+	<!-- <link href="{% static "css/style_puli.css" %}" rel="stylesheet" type="text/css" /> -->
+	<script async defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC51v5GnwpHdHT3zKWECngRXPrzKyYclyE&callback=loadGoogleMap"></script>
+	<script language="javascript">
+		google.maps.event.addDomListener(window, 'load', loadGoogleMap);  //啟動GoogleMap
+
+		var map;  //地圖
+		function loadGoogleMap() {  //顯示GoogleMap
+			var center = new google.maps.LatLng(25.03222,121.543343);  //設定中心點(25.033184, 121.560873)
+			var markers = [];  //地標串列
+			var i=0;
+			map = new google.maps.Map(document.getElementById('map_div'), {  //設定地圖
+				zoom: 14,
+				center: center,
+				mapTypeId: google.maps.MapTypeId.ROADMAP, //可以選擇顯示道路，衛星，還是混和
+				//mapTypeId: google.maps.MapTypeId.SATELLITE,
+				//mapTypeId: google.maps.MapTypeId.HYBRID
+
+			});
+
+
+			{% for item in all %}  //逐筆建立地標
+				var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+				var marker = new google.maps.Marker({
+					position: latLng,
+					title: "{{item.mapName}}",
+					// animation: google.maps.Animation.DROP,  //動畫方式
+					map: map
+				});
+				markers.push(marker);  //將地標加入串列
+			{% endfor %}		
+		}
+		
+		function addmark() {  //加入地標
+			var latLng = new google.maps.LatLng(25.034166, 121.563576);  //地標位置
+			var marker = new google.maps.Marker({  //建立地標
+				position: latLng,
+				title: "台北101",  //地標標題
+				animation: google.maps.Animation.DROP,  //動畫方式
+				map: map,
+			});
+			var infowindow = new google.maps.InfoWindow();  //訊息視窗
+			infowindow.setContent('<h3>台北101</h3><p>精彩呈現TAIPEI的101種風情</p>');  //訊息內容
+			google.maps.event.addListener(marker, 'click', function(event) {  //建立訊息視窗
+				infowindow.open(map, marker);
+			});
+			street = marker.getMap().getStreetView();  //設定街景
+			street.setPosition(latLng);  //街景位置
+			street.setPov({  //設定鏡頭視角
+				heading: 0,
+				zoom: 1,
+				pitch: 0,
+			});
+		}
+
+     
+		function addmark1() {  //加入地標
+			{% for location in locations%}    
+				var latLng = new google.maps.LatLng({{location.la}}, {{location.ln}});  //地標位置
+				var marker = new google.maps.Marker({  //建立地標
+					position: latLng,
+					title: "台北101",  //地標標題
+					animation: google.maps.Animation.DROP,  //動畫方式
+					map: map,
+				});
+			{% empty %}
+			沒有任何資料
+			{% endfor %} 
+			var infowindow = new google.maps.InfoWindow();  //訊息視窗
+			infowindow.setContent('<h3>台北101</h3><p>精彩呈現TAIPEI的101種風情</p>');  //訊息內容
+			google.maps.event.addListener(marker, 'click', function(event) {  //建立訊息視窗
+				infowindow.open(map, marker);
+			});
+			street = marker.getMap().getStreetView();  //設定街景
+			street.setPosition(latLng);  //街景位置
+			street.setPov({  //設定鏡頭視角
+				heading: 0,
+				zoom: 1,
+				pitch: 0,
+			});
+		}
+
+		// function addmark2() {  //加入地標
+		// 	{% for item in all %}  //逐筆建立地標
+		// 	var latLng = new google.maps.LatLng({{item.mapLat}}, {{item.mapLng}});  //景點坐標
+		// 	var marker = new google.maps.Marker({
+		// 		position: latLng,
+		// 		title: "{{item.mapName}}",
+		// 		animation: google.maps.Animation.DROP,  //動畫方式
+		// 		map: map
+		// 	});
+		// 	markers.push(marker);  //將地標加入串列
+		// 	{% endfor %}
+
+		// 	var infowindow = new google.maps.InfoWindow();  //訊息視窗
+		// 	infowindow.setContent('<h3>台北101</h3><p>精彩呈現TAIPEI的101種風情</p>');  //訊息內容
+		// 	google.maps.event.addListener(marker, 'click', function(event) {  //建立訊息視窗
+		// 		infowindow.open(map, marker);
+		// 	});
+		// 	street = marker.getMap().getStreetView();  //設定街景
+		// 	street.setPosition(latLng);  //街景位置
+		// 	street.setPov({  //設定鏡頭視角
+		// 		heading: 0,
+		// 		zoom: 1,
+		// 		pitch: 0,
+		// 	});
+		// }
+
+
+		function show_streeview() {  //顯示街景
+			street.setVisible(true);
+		}
+
+
+	</script>
+</head>
+
+
+
+
+<body>
+	
+	<h2>Google 地圖</h2>
+	<div id="map_div" style="height:500px; width:500px; border:1px solid black;"></div>
+	<input type="button" value="加入地標" onclick="addmark();" style="margin:10px;">
+	<input type="button" value="警察局" onclick="addmark1();" style="margin:10px;">
+	<input type="button" value="住宅偷竊" onclick="addmark2();" style="margin:10px;">
+	<input type="button" value="顯示街景" onclick="show_streeview();" style="margin:10px;">
+
+	<form action="/daan_noise/" method="POST" name="form1">
+		{% csrf_token %}
+		<div>請輸入地址：  <input type="text" name="username" />
+		<input type="submit" value="送出" /></div>
+		<div>接收到的資料：{{mess}}</div> 
+		<div>接收到的經緯度：{{location}}       <input type ="submit" value="前往選屋"> </div>
+	</form>
+
+</body>
+</html>

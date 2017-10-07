@@ -1,0 +1,161 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>市集畫面4</title>
+{% load staticfiles %} 
+<link href="{% static "css/bootstrap.css"%}" rel='stylesheet' type='text/css' />
+<!-- Custom Theme files -->
+<link href="{% static "css/style.css"%}" rel="stylesheet" type="text/css" media="all" />
+<!-- Custom Theme files -->
+<script src="{% static "js/jquery.min.js"%}"></script>
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="My Secret Spot Ui Kit Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android  Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--webfont-->
+<link href='//fonts.googleapis.com/css?family=Play:400,700' rel='stylesheet' type='text/css'>
+    <!-- chart -->
+<script src="{% static "js/Chart.js"%}"></script>
+<!-- //chart -->    
+<!----Calender -------->
+	<link rel="stylesheet" href="{% static "css/clndr.css"%}" type="text/css" />
+	<script src="{% static "js/underscore-min.js"%}" type="text/javascript"></script>
+	<script src="{% static "js/moment-2.2.1.js"%}" type="text/javascript"></script>
+	<script src="{% static "js/clndr.js"%}" type="text/javascript"></script>
+	<script src="{% static "js/site.js"%}" type="text/javascript"></script>
+<!----End Calender -------->
+</head>
+<body>
+	<div class="header">
+		<div class="container">
+			<div class="logo text-center">
+				<a href="city_04"><img src="{% static "/static/images/elephant2_2.png"%}" alt="" /></a>
+			</div>
+			<div class="header-bottom">
+				<div class="header-head text-center">
+					<h1>ELEPHANT IN THE ROOM</h1>
+				</div>				
+			</div>
+		</div>
+	</div>
+    <div class="content">
+        <div class="container">
+            <div class="span_1_by_2">
+				<div class="col-md-9 onehalf">
+					<div class="world_map">  
+                        <h1 class="tlt">空氣品質</h1>
+                        <canvas id="bar" height="200" width="400" style="width: 400px; height: 300px;"></canvas>
+                        <script>
+                            var barChartData = {
+                            labels : ["中正區","大同區","中山區","松山區","大安區","萬華區","信義區","士林區","北投區","內湖區","南港區","文山區"],
+                            datasets : [
+                                {
+                                    fillColor : "#cbb25c",
+                                    data : [60.66,62.58,65.08,60.58,0,63.66,0,57.75,0,0,0,0]
+                                },
+                            /* {
+                                    fillColor : "#5f8b9e",
+                                    data : [28,48,40,19,96,27,100]
+                                } */
+                            ]
+
+                        };
+                            new Chart(document.getElementById("bar").getContext("2d")).Bar(barChartData);
+
+                        </script>
+                    </div>
+                    <div class="follow">
+                            <h3><a class="f-left" href="#bar">中正區</a></h3>
+                            <h3><a class="f-right" href="/district/">大安區</a></h3>
+                            <h3><a class="f-left" href="#bar">中山區</a></h3>
+                            <h3><a class="f-right" href="#bar">大同區</a></h3>
+                            <h3><a class="f-left" href="#bar">松山區</a></h3>
+                            <h3><a class="f-right" href="#bar">萬華區</a></h3>
+                            <h3><a class="f-left" href="#bar">信義區</a></h3>
+                            <h3><a class="f-right" href="#bar">士林區</a></h3>
+                            <h3><a class="f-left" href="#bar">北投區</a></h3>
+                            <h3><a class="f-right" href="#bar">內湖區</a></h3>
+                            <h3><a class="f-left" href="#bar">南港區</a></h3>
+                            <h3><a class="f-right" href="#bar">文山區</a></h3>
+                         <div class="clearfix"></div>
+                    </div>
+                </div>
+				</div>
+				<div class="col-md-3 secoundhalf">
+                        <div class="upload">
+				            <h1 class="tlt">台北市</h1>
+                             <div class="weather">
+                                <h3 class="tlt1">套房</h3>
+                                <div class="t-weather">
+                                    <h5>2039 間</h5>							
+                                </div>
+				             </div>
+                             <div class="weather">
+                                <h3 class="tlt1">雅房</h3>
+                                <div class="t-weather cloud">
+                                    <h5>17 間</h5>
+
+                                </div>
+						
+					         </div>
+					  </div>
+                      <div class="profile">                    
+                            <h3 class="tlt"></h3>
+                            <div class="follow">
+                                <h3><a class="f-left" href="/city_01/">物件件數</a></h3>
+                                <h3><a class="f-right" href="/city_04/">空氣品質</a></h3>
+                                <h3><a class="f-left" href="/city_02/">警消數</a></h3>
+                                <h3><a class="f-right" href="/city_05/">治安案件數</a></h3>
+                                <h3><a class="f-left" href="/city_03/">醫院藥局數</a></h3>
+                                <div class="clearfix"></div>
+                            </div>
+                     </div>
+                   </div>
+                   <div class="col-md-6 spansecound">
+                       
+				   </div>	 
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="container">
+            <div class="col-md-12 footer-bottom">
+                    <div class="col-md-4">
+                         <div class="follow">
+                            <h3><a class="f-left" href="/city_03/">上一頁</a></h3>
+                            <div class="clearfix"></div>
+                         </div>
+                    </div>
+                    <div class="col-md-4">
+                         <div class="follow">
+                            <h5></h5>
+                            <div class="clearfix"></div>
+                         </div>
+
+                    </div>             
+                    <div class="col-md-4">
+                         <div class="follow">
+                            <h3><a class="rrrrr" href="/city_05/">下一頁</a></h3>
+                            <div class="clearfix"></div>
+                         </div>
+                         <div class="follow">
+                                <h3><a class="rrrrr" href="/home/">回首頁</a></h3>
+                                <div class="clearfix"></div>
+                         </div>
+                    </div>
+                    <div class="copyrights text-center">
+                       <p>中壢資策會BB102 版權所有 @2017 III  BB102 All Rights Reserved</p>			
+                    </div>
+             </div>
+             <div class="footer"></div>
+         </div>  
+
+</body>
+</html>
